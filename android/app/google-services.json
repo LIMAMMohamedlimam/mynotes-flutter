@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "463526503820",
+    "project_id": "mynotes-limam",
+    "storage_bucket": "mynotes-limam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463526503820:android:47c4ffad25e82b626ca2a9",
+        "android_client_info": {
+          "package_name": "com.limam.mynotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4Uo4aDCA8u4u6fhxI6bNYnKKcNJWBvuM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
