@@ -2,9 +2,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/views/login_view.dart';
 import 'package:mynotes/views/register_view.dart';
+import 'dart:developer' as devtools show log;
+
 import 'package:mynotes/views/verify_email_view.dart';
 
 void main() {
@@ -17,9 +20,10 @@ void main() {
       ),
       home: const HomePage(),
       routes: {
-        '/login/' :(context) => const LoginView() ,
-        '/register/' :(constexte) => const RegisterView(),
-        '/notes/' :(context) => const NotesView() 
+        loginRoute :(context) => const LoginView() ,
+        registerRoute :(constexte) => const RegisterView(),
+        ntoesRoute :(context) => const NotesView(),
+        verifyEmailRoute :(context) => const VerifyEmailView() ,
       },
     ),
     );
@@ -39,10 +43,13 @@ class HomePage extends StatelessWidget {
               
               case ConnectionState.done:
                 final user = FirebaseAuth.instance.currentUser ;
+
                 if (user != null ){
                   if (user.emailVerified){
+                    return const NotesView() ;
                   }else{
-                    return const VerifyEmailView() ;
+                    devtools.log(user.toString()) ;
+                    Navigator.of(context).pushNamed(verifyEmailRoute) ;
                   }
                 }else{
                   return const LoginView() ;
@@ -54,7 +61,7 @@ class HomePage extends StatelessWidget {
 
                 } */ 
                 
-                return const NotesView() ;
+                return const RegisterView() ;
                 
           default:
             return const CircularProgressIndicator() ;

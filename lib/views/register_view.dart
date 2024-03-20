@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/constants/show_error_dialog.dart';
 import 'package:mynotes/firebase_options.dart';
-import 'dart:developer' as devtools show log ;
 
 
 class RegisterView extends StatefulWidget {
@@ -78,11 +77,11 @@ class _RegisterViewState extends State<RegisterView> {
                   final email = _email.text ;
                   final password = _password.text ;
                   try {
-                    final userCredential =  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
                     email: email ,
                     password: password ,
                     );
-                    devtools.log(userCredential.toString()) ;
+                    Navigator.of(context).pushNamed(verifyEmailRoute) ;
                   }on FirebaseAuthException catch(e) {
                     if (e.message == "Password should be at least 6 characters"){
                      await showErrorDialog(context, "Weark Password") ;
@@ -106,7 +105,11 @@ class _RegisterViewState extends State<RegisterView> {
                     loginRoute, (route) => false ) ;
                 }, child: 
                 const Text("Already Registered ? Login here!")
-                )
+                ),
+                TextButton(onPressed: (){
+                  FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false) ;
+                }, child: const Text("restart"))
             ],
           ) ;
           default:
