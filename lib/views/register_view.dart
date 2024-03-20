@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
+import 'dart:developer' as devtools show log ;
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -70,7 +72,7 @@ class _RegisterViewState extends State<RegisterView> {
               ),
               TextButton(
                 onPressed: () async {
-                  print('hello') ;
+                  devtools.log('hello') ;
                   final email = _email.text ;
                   final password = _password.text ;
                   try {
@@ -78,14 +80,14 @@ class _RegisterViewState extends State<RegisterView> {
                     email: email ,
                     password: password ,
                     );
-                    print(userCredential) ;
+                    devtools.log(userCredential.toString()) ;
                   }on FirebaseAuthException catch(e) {
                     if (e.message == "Password should be at least 6 characters"){
-                      print('Weak Password') ;
+                      devtools.log('Weak Password') ;
                     }else if (e.code == 'email-already-in-use'){
-                      print('Try another email adress.'); 
+                      devtools.log('Try another email adress.'); 
                     }else if (e.code == "invalid-email"){
-                      print("Invalid Email") ;
+                      devtools.log("Invalid Email") ;
                     }
                      
                     }
@@ -95,7 +97,7 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
                 TextButton(onPressed: (){
                   Navigator.of(context).pushNamedAndRemoveUntil( 
-                    '/login/', (route) => false ) ;
+                    loginRoute, (route) => false ) ;
                 }, child: 
                 const Text("Already Registered ? Login here!")
                 )
