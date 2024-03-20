@@ -84,8 +84,9 @@ class _RegisterViewState extends State<RegisterView> {
                     Navigator.of(context).pushNamed(verifyEmailRoute) ;
                   }on FirebaseAuthException catch(e) {
                     if (e.message == "Password should be at least 6 characters"){
-                     await showErrorDialog(context, "Weark Password") ;
+                     await showErrorDialog(context, "Weak Password") ;
                     }else if (e.code == 'email-already-in-use'){
+                      await showErrorDialog(context, "Email already in use") ;
                     }else if (e.code == "invalid-email"){
                       await showErrorDialog(context, "Invalid Email") ;
                     }else{

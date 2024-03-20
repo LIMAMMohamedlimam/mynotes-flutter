@@ -69,18 +69,27 @@ class _LoginViewState extends State<LoginView> {
                       email: email ,
                       password: password ,
                       );
+                      final user = FirebaseAuth.instance.currentUser ;
                       devetools.log(userCredential.toString()) ;
-                      Navigator.of(context).pushNamedAndRemoveUntil(ntoesRoute, (route) => false ,) ;
+                      if (user != null ){
+                        if(user.emailVerified){
+                        Navigator.of(context).pushNamedAndRemoveUntil(ntoesRoute, (route) => false ,) ;
+                        }else{
+                          Navigator.of(context).pushNamed(verifyEmailRoute) ;
+                        }
+                      }
                     } on FirebaseAuthException catch(e){
-                      devetools.log(e.code) ;
                       if(e.code == "invalid-email"){
                         showErrorDialog(context, "Wrong Email") ;
                       }
                       if(e.code == 'invalid-credential'){
-                        showErrorDialog(context, "La combinaison email-code est invalid") ;
-                        devetools.log("La combinaison email-code est invalid ") ;
+                        showErrorDialog(context," La combinaison email-code est invalid") ;
+                      }else{
+                        showErrorDialog(context , "${e.code} wait !!") ;
+                        devetools.log(e.code) ;
                       }
                     }catch (e){
+                      devetools.log(e.runtimeType.toString()) ;
                       await showErrorDialog(context, e.toString()) ;
                     }}, 
 
