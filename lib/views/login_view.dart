@@ -1,11 +1,10 @@
 
-
-
-import 'dart:developer' as devetools show log ;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/constants/show_error_dialog.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
+import 'dart:developer' as devtools show log ;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -62,36 +61,31 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    final email = _email.text ;
+                    final email = _email.text.trimRight();
                     final password = _password.text ;
                     try{
-                      final userCredential = await  FirebaseAuth.instance.signInWithEmailAndPassword(
+                      await AuthService.firebase().logIn(
                       email: email ,
                       password: password ,
                       );
-                      final user = FirebaseAuth.instance.currentUser ;
-                      devetools.log(userCredential.toString()) ;
+                      final user = AuthService.firebase().currentUser ;
                       if (user != null ){
-                        if(user.emailVerified){
+                        if(user.isEmailVerified){
                         Navigator.of(context).pushNamedAndRemoveUntil(ntoesRoute, (route) => false ,) ;
                         }else{
                           Navigator.of(context).pushNamed(verifyEmailRoute) ;
                         }
                       }
-                    } on FirebaseAuthException catch(e){
-                      if(e.code == "invalid-email"){
-                        showErrorDialog(context, "Wrong Email") ;
-                      }
-                      if(e.code == 'invalid-credential'){
-                        showErrorDialog(context," La combinaison email-code est invalid") ;
-                      }else{
-                        showErrorDialog(context , "${e.code} wait !!") ;
-                        devetools.log(e.code) ;
-                      }
-                    }catch (e){
-                      devetools.log(e.runtimeType.toString()) ;
-                      await showErrorDialog(context, e.toString()) ;
-                    }}, 
+                    } on InvalidEmail catch (e){
+                      devtools.log(e.toString()) ;
+                       await showErrorDialog(context, "Wrong Email") ;
+                    } on InvalidCredentials catch(e) {
+                      devtools.log(e.toString()) ;
+                        await showErrorDialog(context," La combinaison email-code est invalid") ;
+                    } on GenericAuthException catch (_){
+                      await showErrorDialog(context, "Authentication Error") ;
+                    }
+                    }, 
 
                   child: const Text('Login'),
                   ),
